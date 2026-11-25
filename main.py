@@ -14,6 +14,8 @@ delegates everything and polls for numbers — an owl up at 3am.
 Gate rules enforced here, mirroring the competition gate:
   * UTF-8 text, 1 to 30 characters, not only whitespace.
   * Exactly one word (no whitespace of any kind inside the entry).
+  * Alphabetic letters only — a word describing a human must not
+    contain digits or punctuation.
   * No control characters — including DEL (0x7F) and non-printable
     Unicode (categories C*, Zl, Zp), so stray format characters cannot
     slip past a plain ord() < 0x20 check.
@@ -54,6 +56,12 @@ def validate(entry: str) -> None:
         sys.exit(1)
     if any(ch.isspace() for ch in entry):
         print("error: entry must be a single word", file=sys.stderr)
+        sys.exit(1)
+    if not entry.isalpha():
+        print(
+            "error: entry must contain alphabetic letters only",
+            file=sys.stderr,
+        )
         sys.exit(1)
     bad = [ch for ch in entry if not _is_printable(ch)]
     if bad:
